@@ -1,12 +1,12 @@
 import Piece from "./Piece";
 
 class Knight extends Piece {
-  constructor(colour, board) {
-    super("k", colour, board);
+  constructor(colour, game) {
+    super("k", colour, game);
   }
 
-  clone(board) {
-    return new Knight(this.colour, board);
+  clone(game) {
+    return new Knight(this.colour, game);
   }
 
   naiveMoveType(to) {
@@ -24,9 +24,9 @@ class Knight extends Piece {
 
     //occupied logic
     {
-      if (this.board.getPiece(to) != null) {
+      if (this.game.getPiece(to) != null) {
         //the position is occupied by ally
-        if (this.board.getPiece(to).colour == this.colour) {
+        if (this.game.getPiece(to).colour == this.colour) {
           return "o";
         }
         //the position is occupied by enemy

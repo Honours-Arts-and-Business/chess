@@ -3,20 +3,20 @@ import Rook from "./Rook";
 
 //NEEDS CASTLING LOGIC
 class King extends Piece {
-  constructor(colour, board) {
-    super("K", colour, board);
+  constructor(colour, game) {
+    super("K", colour, game);
     this.moved = false;
   }
 
-  clone(board) {
-    return new King(this.colour, board);
+  clone(game) {
+    return new King(this.colour, game);
   }
 
   naiveCastleLogic(to) {
-    if (this.board.getPiece(to) == null) {
+    if (this.game.getPiece(to) == null) {
       return false;
     }
-    let piece = this.board.getPiece(to);
+    let piece = this.game.getPiece(to);
 
     if (piece.colour != this.colour) {
       return false;
@@ -34,7 +34,7 @@ class King extends Piece {
       return false;
     }
 
-    let copy = this.board.copy();
+    let copy = this.game.copy();
     copy.board[piece.getPos()[0]][piece.getPos()[1]].pop();
 
     for (
@@ -59,10 +59,10 @@ class King extends Piece {
     //   this.board.board[rook.getPos()[0]][rook.getPos()[1]],
     // ];
 
-    let rook = this.board.board[to[0]][to[1]].pop();
+    let rook = this.game.board[to[0]][to[1]].pop();
     let pos = this.getPos();
     this.moveToEmpty(to);
-    this.board.board[pos[0]][pos[1]].push(rook);
+    this.game.board[pos[0]][pos[1]].push(rook);
 
     this.moved = true;
     rook.moved = true;
@@ -88,9 +88,9 @@ class King extends Piece {
 
     //occupied logic
     {
-      if (this.board.getPiece(to) != null) {
+      if (this.game.getPiece(to) != null) {
         //the position is occupied by ally
-        if (this.board.getPiece(to).colour == this.colour) {
+        if (this.game.getPiece(to).colour == this.colour) {
           return "o";
         } else {
           return "c";
@@ -102,13 +102,13 @@ class King extends Piece {
   }
 
   moveType(to) {
-    if (this.board.getPiece(to) instanceof King) {
+    if (this.game.getPiece(to) instanceof King) {
       return "k";
     }
 
     //if the move was valid ie not a logic error or occupied error
     if (this.naiveMoveType(to) != "l" && this.naiveMoveType(to) != "o") {
-      let copy = this.board.copy();
+      let copy = this.game.copy();
       let self = copy.getPiece(this.getPos());
 
       //bad OOP. idc tho.
@@ -120,7 +120,7 @@ class King extends Piece {
       } else if (this.naiveMoveType(to) == "castle") {
         //castle logic
 
-        let rook = this.board.getPiece(to);
+        let rook = this.game.getPiece(to);
         copy.board[rook.getPos()[0]][rook.getPos()[1]].pop();
 
         let start = Math.min(to[1], self.getPos()[1]);
@@ -169,7 +169,7 @@ class King extends Piece {
       this.moveToEmpty(to);
       console.log("moved to empty spot");
       this.moved = true;
-      this.board.moves += 1;
+      this.game.moves += 1;
 
       return true;
     }
@@ -177,14 +177,14 @@ class King extends Piece {
       this.capture(to);
       this.moved = true;
       console.log("captured");
-      this.board.moves += 1;
+      this.game.moves += 1;
 
       return true;
     }
     if (moveType == "castle") {
       console.log("castled");
       this.castle(to);
-      this.board.moves += 1;
+      this.game.moves += 1;
 
       return true;
     }

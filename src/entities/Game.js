@@ -7,11 +7,12 @@ import Pawn from "./Pieces/Pawn";
 
 //makes more sense to be called Game instead but im too deep in to change it
 class Game {
-  constructor(Game = null) {
+  constructor(game = null) {
     //copy
-    if (Game != null) {
-      this.turn = Game.turn;
-      this.moves = Game.moves;
+    if (game != null) {
+      this.turnLogic = game.turnLogic;
+      this.turn = game.turn;
+      this.moves = game.moves;
       //instantiating
       this.board = [
         [[], [], [], [], [], [], [], []],
@@ -28,18 +29,19 @@ class Game {
       //filling in board
       for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
-          if (Game.getPiece([i, j]) != null) {
-            let piece = Game.getPiece([i, j]);
+          if (game.getPiece([i, j]) != null) {
+            let piece = game.getPiece([i, j]);
             this.board[i][j].push(piece.clone(this));
           }
         }
       }
       //filling in captured
-      for (let i = 0; i < Game.captured.length; i++) {
-        this.captured.push(Game.captured[i].clone(this));
+      for (let i = 0; i < game.captured.length; i++) {
+        this.captured.push(game.captured[i].clone(this));
       }
       return;
     } else {
+      this.turnLogic = true;
       this.turn = true;
       this.moves = 0;
       this.board = [
@@ -124,13 +126,15 @@ class Game {
       return false;
     }
 
-    if (pos[0].colour != this.turn) {
-      console.log("its not ur turn");
-      return false;
-    }
-
-    if (pos[0].validMove(to)) {
-      this.turn = !this.turn;
+    //Turn logic
+    if (this.turnLogic) {
+      if (pos[0].colour != this.turn) {
+        console.log("not your turn");
+        return false;
+      }
+      if (pos[0].validMove(to)) {
+        this.turn = !this.turn;
+      }
     }
 
     return pos[0].move(to); //piece move method needs to mutate board
@@ -233,6 +237,13 @@ class Game {
 
     return true;
   }
+
+  toggleTurnLogic() {
+    this.turnLogic = !this.turnLogic;
+  }
+
+  //checks if checkmates happend, stalemates, deadend etc
+  gameState() {}
 }
 
 export default Game;

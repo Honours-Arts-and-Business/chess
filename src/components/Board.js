@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "../styling/Board.css";
 
-const BoardComponent = (props) => {
-  const { b, move } = props;
+//Bunch of changes need to be made
+const Board = (props) => {
+  const { game, move } = props;
   const [from, setFrom] = useState(null);
   const [to, setTo] = useState(null);
   const [clicked, setClicked] = useState(false);
@@ -10,7 +11,7 @@ const BoardComponent = (props) => {
   const handleMove = (e) => {
     if (
       !clicked &&
-      b.simpleCopy()[parseInt(e.target.getAttribute("row"))][
+      game.simpleCopy()[parseInt(e.target.getAttribute("row"))][
         parseInt(e.target.getAttribute("col"))
       ][0] == "-" //bad hard coding the empty string. sholdnt even use strings in the first place
     ) {
@@ -40,8 +41,8 @@ const BoardComponent = (props) => {
   }, [to]);
 
   const determineColour = (pos) => {
-    if (b.getPiece(pos) != null) {
-      if (b.getPiece(pos).colour) {
+    if (game.getPiece(pos) != null) {
+      if (game.getPiece(pos).colour) {
         return "w";
       }
       return "b";
@@ -54,15 +55,11 @@ const BoardComponent = (props) => {
     }
   };
 
-  const test = () => {
-    console.log(b.moves);
-  };
-
   return (
     <div>
       <table>
         <tbody>
-          {b.simpleCopy().map((item, i) => (
+          {game.simpleCopy().map((item, i) => (
             <tr key={i}>
               {item.map((item2, j) => (
                 <td key={j}>
@@ -81,9 +78,8 @@ const BoardComponent = (props) => {
           ))}
         </tbody>
       </table>
-      <button onClick={test}>testing</button>
     </div>
   );
 };
 
-export default BoardComponent;
+export default Board;

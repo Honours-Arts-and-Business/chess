@@ -1,12 +1,12 @@
 import Piece from "./Piece";
 
 class Queen extends Piece {
-  constructor(color, board) {
-    super("q", color, board);
+  constructor(color, game) {
+    super("q", color, game);
   }
 
-  clone(board) {
-    return new Queen(this.colour, board);
+  clone(game) {
+    return new Queen(this.colour, game);
   }
 
   naiveMoveType(to) {
@@ -25,7 +25,7 @@ class Queen extends Piece {
       //moving down right
       if (from[0] < to[0] && from[1] < to[1]) {
         for (let i = 1; i < Math.abs(from[0] - to[0]); i++) {
-          if (this.board.getPiece([from[0] + i, from[1] + i]) != null) {
+          if (this.game.getPiece([from[0] + i, from[1] + i]) != null) {
             return "l";
           }
         }
@@ -33,7 +33,7 @@ class Queen extends Piece {
       //moving down left
       if (from[0] < to[0] && from[1] > to[1]) {
         for (let i = 1; i < Math.abs(from[0] - to[0]); i++) {
-          if (this.board.getPiece([from[0] + i, from[1] - i]) != null) {
+          if (this.game.getPiece([from[0] + i, from[1] - i]) != null) {
             return "l";
           }
         }
@@ -41,7 +41,7 @@ class Queen extends Piece {
       //moving up right
       if (from[0] > to[0] && from[1] < to[1]) {
         for (let i = 1; i < Math.abs(from[0] - to[0]); i++) {
-          if (this.board.getPiece([from[0] - i, from[1] + i]) != null) {
+          if (this.game.getPiece([from[0] - i, from[1] + i]) != null) {
             return "l";
           }
         }
@@ -49,7 +49,7 @@ class Queen extends Piece {
       //moving up left
       if (from[0] > to[0] && from[1] > to[1]) {
         for (let i = 1; i < Math.abs(from[0] - to[0]); i++) {
-          if (this.board.getPiece([from[0] - i, from[1] - i]) != null) {
+          if (this.game.getPiece([from[0] - i, from[1] - i]) != null) {
             return "l";
           }
         }
@@ -62,7 +62,7 @@ class Queen extends Piece {
           i < Math.max(from[1], to[1]);
           i++
         ) {
-          if (this.board.getPiece([from[0], i]) != null) {
+          if (this.game.getPiece([from[0], i]) != null) {
             return "l";
           }
         }
@@ -75,7 +75,7 @@ class Queen extends Piece {
           i < Math.max(from[0], to[0]);
           i++
         ) {
-          if (this.board.getPiece([i, from[1]]) != null) {
+          if (this.game.getPiece([i, from[1]]) != null) {
             return "l";
           }
         }
@@ -84,9 +84,9 @@ class Queen extends Piece {
 
     //occupied logic
     {
-      if (this.board.getPiece(to) != null) {
+      if (this.game.getPiece(to) != null) {
         //the position is occupied by ally
-        if (this.board.getPiece(to).colour == this.colour) {
+        if (this.game.getPiece(to).colour == this.colour) {
           return "o";
         }
         //the position is occupied by enemy

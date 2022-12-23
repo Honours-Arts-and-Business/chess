@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Game from "../entities/Game";
 import Board from "./Board";
+import Test from "./Test";
 
 const Main = () => {
   const [game, setGame] = useState(new Game());
@@ -13,7 +14,8 @@ const Main = () => {
 
   return (
     <div>
-      <Board b={game} move={move}></Board>
+      <Board game={game} move={move}></Board>
+      <Test game={game}></Test>
     </div>
   );
 };

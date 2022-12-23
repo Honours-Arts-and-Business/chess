@@ -2,13 +2,13 @@ import Piece from "./Piece";
 import King from "./King";
 
 class Rook extends Piece {
-  constructor(colour, board, moved = false) {
-    super("r", colour, board);
+  constructor(colour, game, moved = false) {
+    super("r", colour, game);
     this.moved = moved;
   }
 
-  clone(board) {
-    return new Rook(this.colour, board, this.moved);
+  clone(game) {
+    return new Rook(this.colour, game, this.moved);
   }
 
   naiveMoveType(to) {
@@ -28,7 +28,7 @@ class Rook extends Piece {
           i < Math.max(from[1], to[1]);
           i++
         ) {
-          if (this.board.getPiece([from[0], i]) != null) {
+          if (this.game.getPiece([from[0], i]) != null) {
             return "l";
           }
         }
@@ -41,7 +41,7 @@ class Rook extends Piece {
           i < Math.max(from[0], to[0]);
           i++
         ) {
-          if (this.board.getPiece([i, from[1]]) != null) {
+          if (this.game.getPiece([i, from[1]]) != null) {
             return "l";
           }
         }
@@ -50,9 +50,9 @@ class Rook extends Piece {
 
     //occupied logic
     {
-      if (this.board.getPiece(to) != null) {
+      if (this.game.getPiece(to) != null) {
         //the position is occupied by ally
-        if (this.board.getPiece(to).colour == this.colour) {
+        if (this.game.getPiece(to).colour == this.colour) {
           return "o";
         }
         //the position is occupied by enemy

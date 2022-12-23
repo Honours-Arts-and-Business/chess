@@ -1,10 +1,10 @@
 import King from "./King";
 
 class Piece {
-  constructor(symbol, colour, board) {
+  constructor(symbol, colour, game) {
     this.symbol = symbol;
     this.colour = colour;
-    this.board = board;
+    this.game = game;
   }
   toString() {
     return this.symbol;
@@ -20,12 +20,12 @@ class Piece {
 
   //king & pawn need to override this
   moveType(to) {
-    if (this.board.getPiece(to) instanceof King) {
+    if (this.game.getPiece(to) instanceof King) {
       return "k";
     }
 
     if (this.naiveMoveType(to) != "l" && this.naiveMoveType(to) != "o") {
-      let copy = this.board.copy();
+      let copy = this.game.copy();
       let self = copy.getPiece(this.getPos());
 
       if (this.naiveMoveType(to) == "m") {
@@ -69,14 +69,14 @@ class Piece {
       this.moveToEmpty(to);
       console.log("moved to empty spot");
       this.moved = true;
-      this.board.moves += 1;
+      this.game.moves += 1;
       return true;
     }
     if (moveType == "c") {
       this.capture(to);
       this.moved = true;
       console.log("captured");
-      this.board.moves += 1;
+      this.game.moves += 1;
 
       return true;
     }
@@ -118,7 +118,7 @@ class Piece {
   getPos() {
     for (let i = 0; i < 8; i++) {
       for (let j = 0; j < 8; j++) {
-        if (this.board.board[i][j].includes(this)) {
+        if (this.game.board[i][j].includes(this)) {
           return [i, j];
         }
       }
@@ -128,13 +128,11 @@ class Piece {
 
   moveToEmpty(to) {
     let from = this.getPos();
-    this.board.board[to[0]][to[1]].push(
-      this.board.board[from[0]][from[1]].pop()
-    );
+    this.game.board[to[0]][to[1]].push(this.game.board[from[0]][from[1]].pop());
   }
 
   capture(to) {
-    this.board.captured.push(this.board.board[to[0]][to[1]].pop());
+    this.game.captured.push(this.game.board[to[0]][to[1]].pop());
     this.moveToEmpty(to);
   }
 }
