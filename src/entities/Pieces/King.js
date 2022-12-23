@@ -169,17 +169,23 @@ class King extends Piece {
       this.moveToEmpty(to);
       console.log("moved to empty spot");
       this.moved = true;
+      this.board.moves += 1;
+
       return true;
     }
     if (moveType == "c") {
       this.capture(to);
       this.moved = true;
       console.log("captured");
+      this.board.moves += 1;
+
       return true;
     }
     if (moveType == "castle") {
       console.log("castled");
       this.castle(to);
+      this.board.moves += 1;
+
       return true;
     }
 

@@ -9,6 +9,7 @@ class Board {
   constructor(board = null) {
     //copy
     if (board != null) {
+      this.moves = board.moves;
       //instantiating
       this.board = [
         [[], [], [], [], [], [], [], []],
@@ -37,6 +38,7 @@ class Board {
       }
       return;
     } else {
+      this.moves = 0;
       this.board = [
         [[], [], [], [], [], [], [], []],
         [[], [], [], [], [], [], [], []],
@@ -68,10 +70,10 @@ class Board {
       this.board[7][6].push(new Knight(true, this));
       this.board[7][7].push(new Rook(true, this));
 
-      // for (let i = 0; i < 8; i++) {
-      //   this.board[1][i].push(new Pawn(false, this));
-      //   this.board[6][i].push(new Pawn(true, this));
-      // }
+      for (let i = 0; i < 8; i++) {
+        this.board[1][i].push(new Pawn(false, this));
+        this.board[6][i].push(new Pawn(true, this));
+      }
     }
   }
 
@@ -118,6 +120,7 @@ class Board {
       console.log("tried moving an empty space");
       return false;
     }
+
     return pos[0].move(to); //piece move method needs to mutate board
   }
 
@@ -133,6 +136,19 @@ class Board {
         }
       }
     }
+  }
+
+  validMoveList(colour) {
+    let r = [];
+    for (let i = 0; i < 8; i++) {
+      for (let j = 0; j < 8; j++) {
+        let piece = this.getPiece([i, j]);
+        if (piece != null && piece.colour == colour) {
+          r.push(piece.validMoveList());
+        }
+      }
+    }
+    return r;
   }
 
   naiveCheckingPieces(colour) {
@@ -176,6 +192,34 @@ class Board {
       }
     }
     return false;
+  }
+
+  checkMate(colour) {
+    for (let i = 0; i < this.validMoveList(colour).length; i++) {
+      if (this.validMoveList(colour)[i].length != 0) {
+        return false;
+      }
+    }
+
+    if (!this.checked(colour)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  staleMate(colour) {
+    for (let i = 0; i < this.validMoveList(colour).length; i++) {
+      if (this.validMoveList(colour)[i].length != 0) {
+        return false;
+      }
+    }
+
+    if (this.checked(colour)) {
+      return false;
+    }
+
+    return true;
   }
 }
 

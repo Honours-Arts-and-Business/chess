@@ -7,7 +7,7 @@ const Main = () => {
   const [game, setGame] = useState(new Game());
 
   const test = () => {
-    console.log(game.b.board);
+    console.log(game.b);
   };
 
   const move = (from, to) => {

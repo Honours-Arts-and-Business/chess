@@ -56,7 +56,9 @@ const BoardComponent = (props) => {
     }
   };
 
-  const test = () => {};
+  const test = () => {
+    console.log(b.moves);
+  };
 
   return (
     <div>

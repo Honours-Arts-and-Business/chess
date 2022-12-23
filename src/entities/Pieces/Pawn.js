@@ -1,139 +1,146 @@
 import Piece from "./Piece";
 import King from "./King";
 
+//TODO promotion
 class Pawn extends Piece {
-  constructor(colour, board, counter = 0, doublestep = false) {
+  constructor(colour, board, counter = 0, doublestep = null) {
     super("p", colour, board);
-    this.counter = counter;
     this.doublestep = doublestep;
-    this.inPassing = null;
+    this.counter = counter;
   }
 
-  clone() {
-    return new Pawn(this.colour, this.board, this.counter, this.doublestep);
+  clone(board) {
+    return new Pawn(this.colour, board, this.counter, this.doublestep);
   }
+  //new moves: double promote inPassing
 
+  //TODO
   naiveMoveType(to) {
     let from = this.getPos();
 
     //if white
     if (this.colour) {
-      console.log(from == [from[0], from[1]]);
       if (
-        [from[0] + 1, from[1]] != to &&
-        [from[0] + 1, from[1] + 1] != to &&
-        [from[0] + 1, from[1] - 1] != to &&
-        [from[0] + 2, from[1]] != to
+        !(from[0] - 1 == to[0] && from[1] == to[1]) &&
+        !(from[0] - 2 == to[0] && from[1] == to[1]) &&
+        !(from[0] - 1 == to[0] && from[1] + 1 == to[1]) &&
+        !(from[0] - 1 == to[0] && from[1] - 1 == to[1])
       ) {
         return "l";
       }
 
       //single step
-      if ([from[0] + 1, from[1]] == to) {
+      if (from[0] - 1 == to[0] && from[1] == to[1]) {
         if (this.board.getPiece(to) != null) {
-          return "o";
-        }
-        if (to[0] == 0) {
-          return "promote";
-        }
-      }
-
-      //diagonal step
-      if (
-        [from[0] + 1, from[1] + 1] == to ||
-        [from[0] + 1, from[1] - 1] == to
-      ) {
-        //in passing
-        {
-          for (let i = 0; i < 8; i++) {
-            for (let j = 0; j < 9; j++) {
-              if (this.board.board[i][j].getPiece() instanceof Pawn) {
-                let pawn = this.board.board[i][j].getPiece();
-                if (pawn.inPassing == to && pawn.counter == 1) {
-                  return "c";
-                }
-              }
-            }
-          }
-        }
-
-        if (
-          this.board.getPiece(to) == null ||
-          this.board.getPiece(to).colour == this.colour
-        ) {
           return "l";
         }
-
-        return "c";
       }
 
       //double step
-      if ([from[0] + 2, from[1]] == to) {
+      if (from[0] - 2 == to[0] && from[1] == to[1]) {
         if (this.counter != 0) {
           return "l";
         }
         if (this.board.getPiece(to) != null) {
           return "l";
-        } else {
-          return "double";
+        }
+        return "double";
+      }
+
+      //diagonal step
+      if (
+        (from[0] - 1 == to[0] && from[1] + 1 == to[1]) ||
+        (from[0] - 1 == to[0] && from[1] - 1 == to[1])
+      ) {
+        if (
+          this.board.getPiece(to) != null &&
+          this.board.getPiece(to).colour == this.colour
+        ) {
+          return "o";
+        }
+        if (
+          this.board.getPiece(to) != null &&
+          this.board.getPiece(to).colour != this.colour
+        ) {
+          return "c";
+        }
+        //in passing
+        if (this.board.getPiece(to) == null) {
+          for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
+              let piece = this.board.getPiece([i, j]);
+              if (piece instanceof Pawn && piece.colour != this.colour) {
+                if (piece.doublestep != null && piece.getPos()[1] == to[1]) {
+                  return "inPassing";
+                }
+              }
+            }
+          }
+          return "l";
         }
       }
 
       return "m";
     }
+
     //if black
     else {
       if (
-        [from[0] - 1, from[1]] != to &&
-        [from[0] - 1, from[1] + 1] != to &&
-        [from[0] - 1, from[1] - 1] != to &&
-        [from[0] - 2, from[1]] != to
+        !(from[0] + 1 == to[0] && from[1] == to[1]) &&
+        !(from[0] + 2 == to[0] && from[1] == to[1]) &&
+        !(from[0] + 1 == to[0] && from[1] + 1 == to[1]) &&
+        !(from[0] + 1 == to[0] && from[1] - 1 == to[1])
       ) {
         return "l";
       }
 
       //single step
-      if ([from[0] - 1, from[1]] == to) {
+      if (from[0] + 1 == to[0] && from[1] == to[1]) {
         if (this.board.getPiece(to) != null) {
-          return "o";
+          return "l";
         }
-        if (to[0] == 0) {
-          return "promote";
+      }
+
+      //double step
+      if (from[0] + 2 == to[0] && from[1] == to[1]) {
+        if (this.counter != 0) {
+          return "l";
         }
+        if (this.board.getPiece(to) != null) {
+          return "l";
+        }
+        return "double";
       }
 
       //diagonal step
       if (
-        [from[0] - 1, from[1] + 1] == to ||
-        [from[0] - 1, from[1] - 1] == to
+        (from[0] + 1 == to[0] && from[1] + 1 == to[1]) ||
+        (from[0] + 1 == to[0] && from[1] - 1 == to[1])
       ) {
-        //in passing
-        {
+        if (
+          this.board.getPiece(to) != null &&
+          this.board.getPiece(to).colour == this.colour
+        ) {
+          return "o";
+        }
+        if (
+          this.board.getPiece(to) != null &&
+          this.board.getPiece(to).colour != this.colour
+        ) {
+          return "c";
+        }
+        //inPassing
+        if (this.board.getPiece(to) == null) {
           for (let i = 0; i < 8; i++) {
-            for (let j = 0; j < 9; j++) {
-              if (this.board.board[i][j].getPiece() instanceof Pawn) {
-                let pawn = this.board.board[i][j].getPiece();
-                if (pawn.inPassing == to && pawn.counter == 1) {
-                  return "c";
+            for (let j = 0; j < 8; j++) {
+              let piece = this.board.getPiece([i, j]);
+              if (piece instanceof Pawn && piece.colour != this.colour) {
+                if (piece.doublestep != null && piece.getPos()[1] == to[1]) {
+                  return "inPassing";
                 }
               }
             }
           }
-        }
-
-        if (
-          this.board.getPiece(to) == null ||
-          this.board.getPiece(to).colour == this.colour
-        ) {
-          return "l";
-        }
-
-        return "c";
-      }
-
-      //double step
-      if ([from[0] - 2, from[1]] == to) {
-        if (this.board.getPiece(to) != null) {
           return "l";
         }
       }
@@ -142,6 +149,7 @@ class Pawn extends Piece {
     }
   }
 
+  //TODO
   moveType(to) {
     if (this.board.getPiece(to) instanceof King) {
       return "k";
@@ -157,8 +165,28 @@ class Pawn extends Piece {
         self.capture(to);
       } else if (this.naiveMoveType(to) == "double") {
         self.moveToEmpty(to);
-      } else if (this.naiveMoveType(to) == "promote") {
+      } else if (this.naiveMoveType(to) == "inPassing") {
+        //white
+        if (self.colour) {
+          console.log(copy.moves, copy.getPiece([to[0] + 1, to[1]]));
+          if (copy.moves != copy.getPiece([to[0] + 1, to[1]]).doublestep) {
+            return "l";
+          }
+        }
+        //black
+        else {
+          if (copy.moves != copy.getPiece([to[0], to[1]]).doublestep) {
+            return "l";
+          }
+        }
+
         self.moveToEmpty(to);
+
+        if (self.colour) {
+          copy.board[to[0]][to[1] + 1].pop();
+        } else {
+          copy.board[to[0]][to[1] - 1].pop();
+        }
       }
 
       if (copy.checked(this.colour)) {
@@ -171,20 +199,28 @@ class Pawn extends Piece {
   move(to) {
     let moveType = this.moveType(to);
 
-    if (moveType == "promote") {
-      console.log("WIP");
-      return true;
-    }
     if (moveType == "double") {
       console.log("double stepped");
-      if (this.colour) {
-        this.inPassing = [this.getPos()[0] + 1, this.getPos()[1]];
-      } else {
-        this.inPassing = [this.getPos()[0] - 1, this.getPos()[1]];
-      }
       this.moveToEmpty(to);
+      this.counter += 1;
+      this.board.moves += 1;
+      this.doublestep = this.board.moves;
       return true;
     }
+    if (moveType == "inPassing") {
+      console.log("in passing");
+      this.moveToEmpty(to);
+      this.counter += 1;
+
+      if (this.colour) {
+        this.board.captured.push(this.board.board[to[0] + 1][to[1]].pop());
+      } else {
+        this.board.captured.push(this.board.board[to[0] - 1][to[1]].pop());
+      }
+      this.board.moves += 1;
+      return true;
+    }
+
     if (moveType == "l") {
       console.log("piece movement logic error");
       return false;
@@ -208,13 +244,15 @@ class Pawn extends Piece {
     if (moveType == "m") {
       this.moveToEmpty(to);
       console.log("moved to empty spot");
-      this.moved = true;
+      this.counter += 1;
+      this.board.moves += 1;
       return true;
     }
     if (moveType == "c") {
       this.capture(to);
-      this.moved = true;
+      this.counter += 1;
       console.log("captured");
+      this.board.moves += 1;
       return true;
     }
 

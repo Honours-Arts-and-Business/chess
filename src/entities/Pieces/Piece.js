@@ -69,18 +69,50 @@ class Piece {
       this.moveToEmpty(to);
       console.log("moved to empty spot");
       this.moved = true;
+      this.board.moves += 1;
       return true;
     }
     if (moveType == "c") {
       this.capture(to);
       this.moved = true;
       console.log("captured");
+      this.board.moves += 1;
+
       return true;
     }
 
     //crazy bug is this happens
     console.log("this should never happen");
     return false;
+  }
+
+  validMove(to) {
+    if (this.moveType(to) == "l") {
+      return false;
+    }
+    if (this.moveType(to) == "o") {
+      return false;
+    }
+    if (this.moveType(to) == "check") {
+      return false;
+    }
+    if (this.moveType(to) == "k") {
+      return false;
+    }
+    return true;
+  }
+
+  //should be overriden. Works but inefficient since it checks squares that pieces would never be
+  validMoveList() {
+    let r = [];
+    for (let i = 0; i < 8; i++) {
+      for (let j = 0; j < 8; j++) {
+        if (this.validMove([i, j])) {
+          r.push([i, j]);
+        }
+      }
+    }
+    return r;
   }
 
   getPos() {
