@@ -1,29 +1,19 @@
 import React, { useState, useEffect } from "react";
-import Board from "../entities/Board";
 import Game from "../entities/Game";
-import BoardComponent from "./BoardComponent";
+import Board from "./Board";
 
 const Main = () => {
   const [game, setGame] = useState(new Game());
 
-  const test = () => {
-    console.log(game.b);
-  };
-
   const move = (from, to) => {
-    let moved = game.b.move(from, to);
-    setGame(new Game(game.b));
+    let moved = game.move(from, to);
+    setGame(new Game(game));
     return moved;
   };
 
   return (
     <div>
-      <BoardComponent
-        b={game.b}
-        board={game.b.simpleCopy()}
-        move={move}
-      ></BoardComponent>
-      <button onClick={test}>test</button>
+      <Board b={game} move={move}></Board>
     </div>
   );
 };

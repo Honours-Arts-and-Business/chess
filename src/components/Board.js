@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "../styling/Board.css";
-import Knight from "../entities/Pieces/Knight";
-import Board from "../entities/Board";
 
 const BoardComponent = (props) => {
-  const { b, board, move } = props;
+  const { b, move } = props;
   const [from, setFrom] = useState(null);
   const [to, setTo] = useState(null);
   const [clicked, setClicked] = useState(false);
@@ -12,7 +10,7 @@ const BoardComponent = (props) => {
   const handleMove = (e) => {
     if (
       !clicked &&
-      board[parseInt(e.target.getAttribute("row"))][
+      b.simpleCopy()[parseInt(e.target.getAttribute("row"))][
         parseInt(e.target.getAttribute("col"))
       ][0] == "-" //bad hard coding the empty string. sholdnt even use strings in the first place
     ) {
@@ -64,7 +62,7 @@ const BoardComponent = (props) => {
     <div>
       <table>
         <tbody>
-          {board.map((item, i) => (
+          {b.simpleCopy().map((item, i) => (
             <tr key={i}>
               {item.map((item2, j) => (
                 <td key={j}>

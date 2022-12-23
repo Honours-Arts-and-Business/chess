@@ -168,14 +168,13 @@ class Pawn extends Piece {
       } else if (this.naiveMoveType(to) == "inPassing") {
         //white
         if (self.colour) {
-          console.log(copy.moves, copy.getPiece([to[0] + 1, to[1]]));
           if (copy.moves != copy.getPiece([to[0] + 1, to[1]]).doublestep) {
             return "l";
           }
         }
         //black
         else {
-          if (copy.moves != copy.getPiece([to[0], to[1]]).doublestep) {
+          if (copy.moves != copy.getPiece([to[0] - 1, to[1]]).doublestep) {
             return "l";
           }
         }
